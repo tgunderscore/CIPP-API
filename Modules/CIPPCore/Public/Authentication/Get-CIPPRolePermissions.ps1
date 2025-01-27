@@ -18,13 +18,11 @@ function Get-CIPPRolePermissions {
     $Role = Get-CIPPAzDataTableEntity @Table -Filter $Filter
     if ($Role) {
         $Permissions = $Role.Permissions | ConvertFrom-Json
-        $AllowedTenants = if ($Role.AllowedTenants) { $Role.AllowedTenants | ConvertFrom-Json } else { @() }
-        $BlockedTenants = if ($Role.BlockedTenants) { $Role.BlockedTenants | ConvertFrom-Json } else { @() }
         [PSCustomObject]@{
             Role           = $Role.RowKey
             Permissions    = $Permissions.PSObject.Properties.Value
-            AllowedTenants = @($AllowedTenants)
-            BlockedTenants = @($BlockedTenants)
+            AllowedTenants = if ($Role.AllowedTenants) { $Role.AllowedTenants | ConvertFrom-Json } else { @() }
+            BlockedTenants = if ($Role.BlockedTenants) { $Role.BlockedTenants | ConvertFrom-Json } else { @() }
         }
     } else {
         throw "Role $RoleName not found."

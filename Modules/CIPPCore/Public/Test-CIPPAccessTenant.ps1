@@ -133,11 +133,7 @@ function Test-CIPPAccessTenant {
             Data         = [string]($Results | ConvertTo-Json -Depth 10 -Compress)
         }
         $Table = Get-CIPPTable -TableName 'AccessChecks'
-        try {
-            $null = Add-CIPPAzDataTableEntity @Table -Entity $Entity -Force
-        } catch {
-            Write-LogMessage -user $ExecutingUser -API $APINAME -tenant $Tenant.defaultDomainName -message "Failed to add access check for $($Tenant.customerId): $($_.Exception.Message)" -Sev 'Error' -LogData (Get-CippException -Exception $_)
-        }
+        $null = Add-CIPPAzDataTableEntity @Table -Entity $Entity -Force
     }
 
     return $Results

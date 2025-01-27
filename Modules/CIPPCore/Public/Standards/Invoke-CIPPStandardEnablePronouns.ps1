@@ -23,7 +23,7 @@ function Invoke-CIPPStandardEnablePronouns {
         UPDATECOMMENTBLOCK
             Run the Tools\Update-StandardsComments.ps1 script to update this comment block
     .LINK
-        https://docs.cipp.app/user-documentation/tenant/standards/list-standards/global-standards#low-impact
+        https://docs.cipp.app/user-documentation/tenant/standards/edit-standards
     #>
 
     param ($Tenant, $Settings)
@@ -33,8 +33,8 @@ function Invoke-CIPPStandardEnablePronouns {
     try {
         $CurrentState = New-GraphGetRequest -Uri $Uri -tenantid $Tenant
     } catch {
-        $ErrorMessage = Get-CippException -Exception $_
-        Write-LogMessage -API 'Standards' -tenant $Tenant -message "Could not get CurrentState for Pronouns. Error: $($ErrorMessage.NormalizedError)" -sev Error
+        $ErrorMessage = Get-NormalizedError -Message $_.Exception.Message
+        Write-LogMessage -API 'Standards' -tenant $Tenant -message "Could not get CurrentState for Pronouns. Error: $ErrorMessage" -sev Error
         Return
     }
     Write-Host $CurrentState

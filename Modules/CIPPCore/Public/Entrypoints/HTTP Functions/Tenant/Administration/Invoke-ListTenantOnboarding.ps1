@@ -22,16 +22,15 @@ function Invoke-ListTenantOnboarding {
                 $TenantOnboarding.Logs = $Logs
                 $TenantOnboarding
             })
-        $Results = $Results | Sort-Object Timestamp -Descending
         $StatusCode = [HttpStatusCode]::OK
     } catch {
-        $ErrorMessage = Get-CippException -Exception $_
-        $Results = "Function Error: $($ErrorMessage.LineNumber) - $($ErrorMessage.NormalizedError)"
+        $ErrorMsg = Get-NormalizedError -message $($_.Exception.Message)
+        $Results = "Function Error: $($_.InvocationInfo.ScriptLineNumber) - $ErrorMsg"
         $StatusCode = [HttpStatusCode]::BadRequest
     }
     # Associate values to output bindings by calling 'Push-OutputBinding'.
     Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
             StatusCode = $StatusCode
-            Body       = @($Results)
+            Body       = $Results
         })
 }

@@ -11,33 +11,28 @@ Function Invoke-EditTransportRule {
     param($Request, $TriggerMetadata)
 
     $APIName = $TriggerMetadata.FunctionName
-    $ExecutingUser = $Request.headers.'x-ms-client-principal'
-    Write-LogMessage -user $ExecutingUser -API $APINAME -message 'Accessed this API' -Sev 'Debug'
+    $User = $request.headers.'x-ms-client-principal'
+    Write-LogMessage -user $User -API $APINAME -message 'Accessed this API' -Sev 'Debug'
+    $Tenantfilter = $request.Query.tenantfilter
 
-    $TenantFilter = $Request.Query.tenantFilter ?? $Request.body.tenantFilter
-    $Identity = $Request.Query.guid ?? $Request.body.guid
-    $State = $Request.Query.state ?? $Request.body.state
 
     $Params = @{
-        Identity = $Identity
+        Identity = $request.query.guid
     }
 
     try {
-        $cmdlet = if ($State -eq 'enable') { 'Enable-TransportRule' } else { 'Disable-TransportRule' }
-        $null = New-ExoRequest -tenantid $TenantFilter -cmdlet $cmdlet -cmdParams $params -UseSystemMailbox $true
-        $Result = "Set transport rule $($Identity) to $($State)"
-        Write-LogMessage -user $ExecutingUser -API $APINAME -tenant $TenantFilter -message $Result -sev Info
-        $StatusCode = [HttpStatusCode]::OK
+        $cmdlet = if ($request.query.state -eq 'enable') { 'Enable-TransportRule' } else { 'Disable-TransportRule' }
+        $null = New-ExoRequest -tenantid $Tenantfilter -cmdlet $cmdlet -cmdParams $params -UseSystemMailbox $true
+        $Result = "Set transport rule $($Request.query.guid) to $($request.query.State)"
+        Write-LogMessage -user $User -API $APINAME -tenant $tenantfilter -message "Set transport rule $($Request.query.guid) to $($request.query.State)" -sev Info
     } catch {
         $ErrorMessage = Get-CippException -Exception $_
-        Write-LogMessage -user $ExecutingUser -API $APINAME -tenant $TenantFilter -message "Failed setting transport rule $($Identity) to $($State). Error:$($ErrorMessage.NormalizedError)" -Sev 'Error' -LogData $ErrorMessage
+        Write-LogMessage -user $User -API $APINAME -tenant $tenantfilter -message "Failed setting transport rule $($Request.query.guid) to $($request.query.State). Error:$($ErrorMessage.NormalizedError)" -Sev 'Error' -LogData $ErrorMessage
         $Result = $ErrorMessage.NormalizedError
-        $StatusCode = [HttpStatusCode]::Forbidden
     }
-
     # Associate values to output bindings by calling 'Push-OutputBinding'.
     Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
-            StatusCode = $StatusCode
+            StatusCode = [HttpStatusCode]::OK
             Body       = @{Results = $Result }
         })
 

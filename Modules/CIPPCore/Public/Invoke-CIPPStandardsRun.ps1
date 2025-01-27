@@ -19,8 +19,7 @@ function Invoke-CIPPStandardsRun {
     if ($Force.IsPresent) {
         Write-Host 'Clearing Rerun Cache'
         foreach ($Task in $AllTasks) {
-            Write-Host "Clearing $($Task.Standard)_$($TemplateID)"
-            $null = Test-CIPPRerun -Type Standard -Tenant $Task.Tenant -API "$($Task.Standard)_$($TemplateID)" -Clear
+            $null = Test-CIPPRerun -Type Standard -Tenant $Task.Tenant -API $Task.Standard -Clear
         }
     }
 

@@ -15,7 +15,7 @@ function Invoke-CIPPStandardDisableSelfServiceLicenses {
         TAG
             "mediumimpact"
         ADDEDCOMPONENT
-            {"type":"textField","name":"standards.DisableSelfServiceLicenses.Exclusions","label":"License Ids to exclude from this standard","required":false}
+            {"type":"input","name":"standards.DisableSelfServiceLicenses.Exclusions","label":"License Ids to exclude from this standard"}
         IMPACT
             Medium Impact
         POWERSHELLEQUIVALENT
@@ -24,7 +24,7 @@ function Invoke-CIPPStandardDisableSelfServiceLicenses {
         UPDATECOMMENTBLOCK
             Run the Tools\Update-StandardsComments.ps1 script to update this comment block
     .LINK
-        https://docs.cipp.app/user-documentation/tenant/standards/list-standards/entra-aad-standards#medium-impact
+        https://docs.cipp.app/user-documentation/tenant/standards/edit-standards
     #>
 
     param($Tenant, $Settings)

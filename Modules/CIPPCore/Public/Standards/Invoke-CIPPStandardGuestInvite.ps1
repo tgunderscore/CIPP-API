@@ -5,26 +5,23 @@ function Invoke-CIPPStandardGuestInvite {
     .COMPONENT
         (APIName) GuestInvite
     .SYNOPSIS
-        (Label) Guest Invite setting
+        (Label) Guest Invite settings
     .DESCRIPTION
         (Helptext) This setting controls who can invite guests to your directory to collaborate on resources secured by your company, such as SharePoint sites or Azure resources.
         (DocsDescription) This setting controls who can invite guests to your directory to collaborate on resources secured by your company, such as SharePoint sites or Azure resources.
     .NOTES
         CAT
-            Entra (AAD) Standards
+            InTune Standards
         TAG
-            "mediumimpact"
+            "highimpact"
         ADDEDCOMPONENT
-            {"type":"autoComplete","multiple":false,"label":"Who can send invites?","name":"standards.GuestInvite.allowInvitesFrom","options":[{"label":"Everyone","value":"everyone"},{"label":"Admins, Guest inviters and All Members","value":"adminsGuestInvitersAndAllMembers"},{"label":"Admins and Guest inviters","value":"adminsAndGuestInviters"},{"label":"None","value":"none"}]}
         IMPACT
-            Medium Impact
-        POWERSHELLEQUIVALENT
-            
+            High Impact
         RECOMMENDEDBY
         UPDATECOMMENTBLOCK
             Run the Tools\Update-StandardsComments.ps1 script to update this comment block
     .LINK
-        https://docs.cipp.app/user-documentation/tenant/standards/list-standards/entra-aad-standards#medium-impact
+        https://docs.cipp.app/user-documentation/tenant/standards/edit-standards
     #>
 
     param($Tenant, $Settings)

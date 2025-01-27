@@ -41,7 +41,7 @@ Function Invoke-ExecRestoreBackup {
                 $ht2 = @{}
                 $line.psobject.properties | ForEach-Object { $ht2[$_.Name] = [string]$_.Value }
                 $Table.Entity = $ht2
-                Add-AzDataTableEntity @Table -Force
+                Add-CIPPAzDataTableEntity @Table -Force
             }
             Write-LogMessage -user $request.headers.'x-ms-client-principal' -API $APINAME -message 'Created backup' -Sev 'Debug'
 

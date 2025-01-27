@@ -19,7 +19,7 @@ Function Invoke-ListSignIns {
     $Days = $Request.Query.Days ?? 7
 
     try {
-        if ($Request.Query.failedLogonsOnly -eq 'true' -or $Request.Query.failedLogonsOnly -eq $true) {
+        if ($Request.Query.failedLogonsOnly) {
             $FailedLogons = ' and (status/errorCode eq 50126)'
         }
 

@@ -89,7 +89,7 @@ Function Invoke-ExecIncidentsList {
     if (!$body) {
         $StatusCode = [HttpStatusCode]::OK
         $body = [PSCustomObject]@{
-            Results = @($GraphRequest | Where-Object -Property id -NE $null)
+            MSResults = ($GraphRequest | Where-Object -Property id -NE $null)
         }
     }
     Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{

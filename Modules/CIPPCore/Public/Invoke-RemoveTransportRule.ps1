@@ -11,32 +11,29 @@ Function Invoke-RemoveTransportRule {
     param($Request, $TriggerMetadata)
 
     $APIName = $TriggerMetadata.FunctionName
-    $ExecutingUser = $Request.headers.'x-ms-client-principal'
-    Write-LogMessage -user $ExecutingUser -API $APIName -message 'Accessed this API' -Sev 'Debug'
+    $User = $request.headers.'x-ms-client-principal'
+    Write-LogMessage -user $User -API $APINAME -message 'Accessed this API' -Sev 'Debug'
+    $Tenantfilter = $request.Query.tenantfilter
 
-    $TenantFilter = $Request.Query.tenantFilter ?? $Request.body.tenantFilter
-    $Identity = $Request.Query.guid ?? $Request.body.guid
 
     $Params = @{
-        Identity = $Identity
+        Identity = $request.query.guid
     }
 
     try {
         $cmdlet = 'Remove-TransportRule'
-        $null = New-ExoRequest -tenantid $TenantFilter -cmdlet $cmdlet -cmdParams $Params -UseSystemMailbox $true
-        $Result = "Deleted $($Identity)"
-        Write-LogMessage -user $ExecutingUser -API $APIName -tenant $TenantFilter -message "Deleted transport rule $($Identity)" -Sev Info
-        $StatusCode = [HttpStatusCode]::OK
+        $null = New-ExoRequest -tenantid $Tenantfilter -cmdlet $cmdlet -cmdParams $params -UseSystemMailbox $true
+        $Result = "Deleted $($Request.query.guid)"
+        Write-LogMessage -user $User -API $APIName -tenant $tenantfilter -message "Deleted transport rule $($Request.query.guid)" -sev Debug
     } catch {
-        $ErrorMessage = Get-CippException -Exception $_
-        Write-LogMessage -user $ExecutingUser -API $APIName -tenant $TenantFilter -message "Failed deleting transport rule $($Identity). Error:$($ErrorMessage.NormalizedError)" -Sev Error -LogData $ErrorMessage
-        $Result = $ErrorMessage.NormalizedError
-        $StatusCode = [HttpStatusCode]::Forbidden
+        $ErrorMessage = Get-NormalizedError -Message $_.Exception
+        Write-LogMessage -user $User -API $APIName -tenant $tenantfilter -message "Failed deleting transport rule $($Request.query.guid). Error:$($ErrorMessage.NormalizedError)" -Sev Error -LogData $ErrorMessage
+        $Result = $ErrorMessage
     }
-
     # Associate values to output bindings by calling 'Push-OutputBinding'.
     Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
-            StatusCode = $StatusCode
-            Body       = @{ Results = $Result }
+            StatusCode = [HttpStatusCode]::OK
+            Body       = @{Results = $Result }
         })
+
 }

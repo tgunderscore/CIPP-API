@@ -17,11 +17,7 @@ Function Invoke-ListBreachesTenant {
     } else {
         $filter = $null
     }
-    try {
-        $usersResults = (Get-CIPPAzDataTableEntity @Table -Filter $filter).breaches | ConvertFrom-Json -ErrorAction SilentlyContinue
-    } catch {
-        $usersResults = $null
-    }
+    $usersResults = (Get-CIPPAzDataTableEntity @Table -Filter $filter).breaches | ConvertFrom-Json -ErrorAction SilentlyContinue
     if ($usersResults -eq $null) {
         $usersResults = @()
     }

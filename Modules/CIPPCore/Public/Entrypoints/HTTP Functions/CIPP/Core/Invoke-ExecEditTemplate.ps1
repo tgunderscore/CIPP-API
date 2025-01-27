@@ -15,19 +15,17 @@ Function Invoke-ExecEditTemplate {
 
     try {
         $Table = Get-CippTable -tablename 'templates'
+        $Table.Force = $true
         $guid = $request.body.guid
         $JSON = ConvertTo-Json -Compress -Depth 100 -InputObject ($request.body | Select-Object * -ExcludeProperty GUID)
-        $Type = $request.Body.Type
+        $Type = $request.Query.Type
 
         if ($Type -eq 'IntuneTemplate') {
             Write-Host 'Intune Template'
-            $OriginalTemplate = Get-CIPPAzDataTableEntity @Table -Filter "PartitionKey eq 'IntuneTemplate' and GUID eq '$GUID'"
-            $OriginalTemplate = ($OriginalTemplate.JSON | ConvertFrom-Json -Depth 100)
-            $RawJSON = $OriginalTemplate.RAWJson
+            Write-Host ''
+            $RawJSON = $request.body | Select-Object * -ExcludeProperty displayName, description, type, GUID | ConvertTo-Json -Depth 10 -Compress
             Set-CIPPIntuneTemplate -RawJSON $RawJSON -GUID $GUID -DisplayName $Request.body.displayName -Description $Request.body.description -templateType $Request.body.type
         } else {
-            $Table.Force = $true
-
             Add-CIPPAzDataTableEntity @Table -Entity @{
                 JSON         = "$JSON"
                 RowKey       = "$GUID"
